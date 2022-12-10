@@ -24,7 +24,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
     coverage = serializers.SerializerMethodField()
 
     interest_tags = TagSerializer(source="user.interest_tags", many=True, read_only=True)
-    skills = TagSerializer(source="user.interest_tags", many=True, read_only=True)
+    skills = TagSerializer(source="user.skills", many=True, read_only=True)
 
     def get_coverage(self, obj: StudentProfile):
         tags = self.context["request"].query_params.get("tags", "").split(",")
