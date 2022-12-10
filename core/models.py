@@ -17,8 +17,8 @@ class Tag(models.Model):
 
 class Company(models.Model):
     name = models.CharField(max_length=127)
-
     description = models.TextField()
+    image = models.ImageField(upload_to="companies", null=True)
 
     interest_tags = models.ManyToManyField(Tag, related_name="company_required_skills", blank=True)
     skills = models.ManyToManyField(Tag, related_name="company_scope", blank=True)
