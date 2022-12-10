@@ -44,7 +44,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    company = serializers.ReadOnlyField()
+    company = serializers.PrimaryKeyRelatedField(queryset=Company.objects.all())
     student = serializers.PrimaryKeyRelatedField(queryset=StudentProfile.objects.all())
 
     def validate(self, attrs):
