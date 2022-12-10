@@ -1,4 +1,3 @@
-import django_filters.rest_framework as filters
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.mixins import ListModelMixin
 
