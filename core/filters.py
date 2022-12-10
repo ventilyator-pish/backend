@@ -30,4 +30,3 @@ class StudentProfileFilter(filters.FilterSet):
     class Meta:
         model = StudentProfile
         fields = ["id", "tags"]
-g

@@ -1,9 +1,15 @@
 import django_filters.rest_framework as filters
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.mixins import ListModelMixin
 
 from core.filters import StudentProfileFilter
-from core.models import Project, StudentProfile
-from core.serializers import ProjectSerializer, StudentProfileSerializer
+from core.models import Tag, Project, StudentProfile
+from core.serializers import TagSerializer, ProjectSerializer, StudentProfileSerializer
+
+
+class TagViewSet(GenericViewSet, ListModelMixin):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
 
 
 class ProjectViewSet(ModelViewSet):

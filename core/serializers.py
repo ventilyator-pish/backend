@@ -1,7 +1,13 @@
 from rest_framework import serializers
 
-from core.models import StudentProfile, Project
+from core.models import Tag, StudentProfile, Project
 from core.utils.coverage import coverage
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = "__all__"
 
 
 class StudentProfileSerializer(serializers.ModelSerializer):
