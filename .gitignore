@@ -3,3 +3,5 @@ venv/
 static/
 .DS_Store
 environment/*
+
+**/__pycache__
