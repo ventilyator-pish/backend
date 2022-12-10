@@ -3,5 +3,6 @@ venv/
 static/
 .DS_Store
 environment/*
+!environment/.gitkeep
 
 **/__pycache__
