@@ -54,6 +54,8 @@ class StudentProfile(models.Model):
 
     isu = models.CharField(max_length=1024)
 
+    image = models.ImageField(upload_to="students/", null=True, blank=True)
+
     course = models.IntegerField()
     qualification_name = models.CharField(max_length=17)
     specialization_name = models.CharField(max_length=63)
