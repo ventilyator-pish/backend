@@ -23,6 +23,9 @@ class StudentProfileSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(source="user.last_name")
     coverage = serializers.SerializerMethodField()
 
+    interest_tags = TagSerializer(source="user.interest_tags", many=True, read_only=True)
+    skills = TagSerializer(source="user.interest_tags", many=True, read_only=True)
+
     def get_coverage(self, obj: StudentProfile):
         tags = self.context["request"].query_params.get("tags", "").split(",")
         tags = list(map(int, tags)) if tags[0] else []
@@ -68,6 +71,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     studentprofile = StudentProfileSerializer()
     company = CompanySerializer()
+
     interest_tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), write_only=True)
     skills_tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), write_only=True)
 

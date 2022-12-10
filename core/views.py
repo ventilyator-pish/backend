@@ -44,7 +44,11 @@ class ProjectViewSet(ModelViewSet):
 
 
 class StudentProfileViewSet(ModelViewSet):
-    queryset = StudentProfile.objects.all().prefetch_related("user__skills").select_related("user")
+    queryset = StudentProfile.objects.all().prefetch_related(
+        "user__skills",
+        "user__interest_tags"
+    ).select_related("user")
+
     serializer_class = StudentProfileSerializer
 
     filterset_class = StudentProfileFilter
