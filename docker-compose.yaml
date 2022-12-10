@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  backend:
+    image: backend
+    build:
+      dockerfile: Dockerfile
+      context: ./
+      target: web-server
+    container_name: backend-container
+    env_file:
+      - environment/db.env
+      - environment/app.env
+    environment:
+      - ENT_REDIS_LOCATION=redis://redis:6379
+      - GUNICORN_WORKERS=4
+      - GUNICORN_THREADS=12
+  
+    expose:
+        - 4022
+    volumes:
+      - static_data:/app/static
+    depends_on:
+      - db
+
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql
+    env_file:
+      - environment/db.env
+
+  nginx:
+      container_name: nginx
+      build: ./nginx/dev
+      ports:
+          - "4022:4022"
+      depends_on:
+          - backend
+      volumes:
+          - ./static:/static
+          - ./media:/media
+          - ./nginx/dev:/etc/nginx/conf.d
+#          - ../pish-front/build:/var/www/html/app
+  redis:
+     image: redis
+     restart: always
+     ports:
+       - "6379:6379"
+
+networks:
+  default:
+    name: web
+    external: true
+
+volumes:
+  static_data:
+    name: static_data
+  pg_data:
+    name: pg_data
