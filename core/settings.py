@@ -120,6 +120,12 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=365),
 }
 
+DJOSER = {
+    "SERIALIZERS": {
+        "current_user": "core.serializers.UserSerializer"
+    }
+}
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
