@@ -26,8 +26,8 @@ jobs:
             - name: Delivery
               run: |
                 rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete --exclude './environment' --exclude './static' --exclude './media' --exclude './logs' . ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }}:~/backend/
-                rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" $HOME/app.env ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }}:~/backend/environments/app.env
-                rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" $HOME/app.env ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }}:~/backend/environments/db.env
+                rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" $HOME/app.env ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }}:~/backend/environment/app.env
+                rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" $HOME/app.env ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }}:~/backend/environment/db.env
             - name: Building on server
               run: |
                 ssh -i $HOME/.ssh/key ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }} 'cd backend && docker-compose up -d --build'
