@@ -27,7 +27,6 @@ schema_view = get_schema_view(
       license=openapi.License(name="BSD License"),
    ),
    public=True,
-   url="http://95.163.234.199:4022/",
    permission_classes=[permissions.AllowAny],
 )
 

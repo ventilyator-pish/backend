@@ -36,14 +36,13 @@ services:
       container_name: nginx
       build: ./nginx/dev
       ports:
-          - "4022:4022"
-      depends_on:
-          - backend
+          - "4022:80"
+      command: [ "/bin/bash", "-c", "nginx -g 'daemon off;'" ]
       volumes:
           - ./static:/static
           - ./media:/media
           - ./nginx/dev:/etc/nginx/conf.d
-#          - ../pish-front/build:/var/www/html/app
+          - ../front/build:/var/www/html/app
       networks:
           - web-pish
 
