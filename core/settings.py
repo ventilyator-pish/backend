@@ -38,6 +38,7 @@ LOGLEVEL = os.environ.get("LOGLEVEL", "INFO")
 
 ALLOWED_HOSTS = [
     "95.163.234.199",
+    "127.0.0.1",
 ]
 
 # Application definition
@@ -104,7 +105,8 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.BrowsableAPIRenderer",
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "EXCEPTION_HANDLER": "core.exceptions.custom_exception_handler"
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "EXCEPTION_HANDLER": "core.exceptions.custom_exception_handler",
 }
 
 SIMPLE_JWT = {

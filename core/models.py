@@ -40,12 +40,13 @@ class User(AbstractUser):
         STUDENT = "student"
         COMPANY = "company"
 
-    subtitle = models.CharField(max_length=17)
-    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
     user_type = models.CharField(choices=UserType.choices, max_length=15)
 
-    interest_tags = models.ManyToManyField(Tag, related_name="user_required_skills")
-    skills = models.ManyToManyField(Tag, related_name="user_skills")
+    subtitle = models.CharField(max_length=17, blank=True)
+    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, blank=True)
+
+    interest_tags = models.ManyToManyField(Tag, related_name="user_required_skills", null=True, blank=True)
+    skills = models.ManyToManyField(Tag, related_name="user_skills", null=True, blank=True)
 
 
 class StudentProfile(models.Model):
@@ -62,7 +63,7 @@ class StudentProfile(models.Model):
     is_verified = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"StudentProfile[{self.id}] {self.user.first_name}"
+        return f"StudentProfile[{self.id}] {self.isu} {self.user.first_name}"
 
 
 class Project(models.Model):
