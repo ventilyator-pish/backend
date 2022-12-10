@@ -19,16 +19,18 @@ services:
     expose:
         - 4022
     volumes:
-      - static_data:/app/static
+      - statics_data:/app/static
+    networks:
+      - web-pish
 
   db:
     image: postgres
-    ports:
-      - "5432:5432"
     volumes:
-      - pg_data:/var/lib/postgresql
+      - pg_datas:/var/lib/postgresql
     env_file:
       - environment/db.env
+    networks:
+      - web-pish
 
   nginx:
       container_name: nginx
@@ -42,6 +44,8 @@ services:
           - ./media:/media
           - ./nginx/dev:/etc/nginx/conf.d
 #          - ../pish-front/build:/var/www/html/app
+      networks:
+          - web-pish
 
   redis:
      image: redis
@@ -50,12 +54,11 @@ services:
        - "6379:6379"
 
 networks:
-  default:
-    name: web
-    external: true
+  web-pish: 
+    name: web-pish
 
 volumes:
-  static_data:
-    name: static_data
-  pg_data:
-    name: pg_data
+  statics_data:
+    name: statics_data
+  pg_datas:
+    name: pg_datas
