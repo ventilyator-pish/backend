@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from core.models import Company, User, Tag, StudentProfile, Project
+from core.exceptions import IsNotCompanyException
+from core.models import Company, User, Tag, StudentProfile, Project, Review
 from core.utils.coverage import coverage
 
 
@@ -23,6 +24,9 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class StudentProfileSerializer(serializers.ModelSerializer):
+    interest_tags = serializers.PrimaryKeyRelatedField(source="user.interest_tags")
+    skills_tags = serializers.PrimaryKeyRelatedField(source="user.skills")
+
     email = serializers.CharField(source="user.email")
     first_name = serializers.CharField(source="user.first_name")
     last_name = serializers.CharField(source="user.last_name")
@@ -42,4 +46,29 @@ class StudentProfileSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
+        fields = "__all__"
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    company = serializers.ReadOnlyField()
+    student = serializers.PrimaryKeyRelatedField()
+
+    def validate(self, attrs):
+        request = self.context["request"]
+
+        if not request.user or not request.user.company:
+            raise IsNotCompanyException()
+
+        return attrs
+
+    def create(self, validated_data: dict) -> Review:
+        request = self.context["request"]
+
+        validated_data["company"] = request.user.company
+        instance = super().create(validated_data)
+
+        return instance
+
+    class Meta:
+        model = Review
         fields = "__all__"

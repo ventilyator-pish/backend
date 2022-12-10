@@ -5,8 +5,8 @@ from rest_framework.validators import ValidationError
 from rest_framework.response import Response
 
 from core.filters import StudentProfileFilter, TagFilter
-from core.models import Company, Tag, Project, StudentProfile, StudentRequest
-from core.serializers import CompanySerializer, TagSerializer, ProjectSerializer, StudentProfileSerializer
+from core.models import Company, Tag, Project, StudentProfile, StudentRequest, Review
+from core.serializers import CompanySerializer, ReviewSerializer, TagSerializer, ProjectSerializer, StudentProfileSerializer
 from core.utils.parse_tags import parse_url_tags
 
 
@@ -96,3 +96,8 @@ class CompanyViewSet(ModelViewSet):
         company.save()
 
         return Response({"status": "ok"})
+
+
+class ReviewViewSet(ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer

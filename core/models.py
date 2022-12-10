@@ -108,3 +108,11 @@ class StudentRequest(models.Model):
 
     def __str__(self):
         return f"StudentRequest[{self.id}] {self.company.name} {self.student.isu}"
+
+
+class Review(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+
+    updated_at = models.DateTimeField(auto_now=True)
+    review = models.TextField()

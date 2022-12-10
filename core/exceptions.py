@@ -9,3 +9,8 @@ def custom_exception_handler(exception: Exception, context: dict):
         response.data["error_code"] = exception.get_codes()
 
     return response
+
+
+class IsNotCompanyException(APIException):
+    status_code = 400
+    default_code = "is_not_company"
