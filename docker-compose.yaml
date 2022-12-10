@@ -20,8 +20,6 @@ services:
         - 4022
     volumes:
       - static_data:/app/static
-    depends_on:
-      - db
 
   db:
     image: postgres
@@ -44,6 +42,7 @@ services:
           - ./media:/media
           - ./nginx/dev:/etc/nginx/conf.d
 #          - ../pish-front/build:/var/www/html/app
+
   redis:
      image: redis
      restart: always
