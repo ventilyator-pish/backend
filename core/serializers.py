@@ -67,6 +67,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     studentprofile = StudentProfileSerializer()
+    company = CompanySerializer()
     interest_tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), write_only=True)
     skills_tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), write_only=True)
 
