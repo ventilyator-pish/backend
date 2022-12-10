@@ -23,7 +23,7 @@ jobs:
                 chmod 600 "$HOME/.ssh/key"
             - name: Delivery
               run: |
-                rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete --exclude './static' --exclude 'django_core/media' --exclude './logs' . ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }}:~/backend/
+                rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete --exclude './environment' --exclude './static' --exclude './media' --exclude './logs' . ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }}:~/backend/
             - name: Building on server
               run: |
                 ssh -i $HOME/.ssh/key ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }} 'cd backend && docker-compose up -d --build'
