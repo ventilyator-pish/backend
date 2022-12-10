@@ -51,7 +51,7 @@ class User(AbstractUser):
     user_type = models.CharField(choices=UserType.choices, max_length=15)
 
     subtitle = models.CharField(max_length=17, blank=True)
-    company = models.OneToOneField(Company, on_delete=models.CASCADE)
+    company = models.OneToOneField(Company, on_delete=models.CASCADE, null=True)
 
     interest_tags = models.ManyToManyField(Tag, related_name="user_required_skills", blank=True)
     skills = models.ManyToManyField(Tag, related_name="user_skills", blank=True)
