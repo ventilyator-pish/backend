@@ -4,5 +4,5 @@ static/
 .DS_Store
 environment/*
 !environment/.gitkeep
-g
+
 **/__pycache__
