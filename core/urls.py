@@ -9,13 +9,14 @@ from drf_yasg import openapi
 from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 
-from core.views import TagViewSet, StudentProfileViewSet, ProjectViewSet
+from core.views import TagViewSet, StudentProfileViewSet, ProjectViewSet, CompanyViewSet
 
 
 router = DefaultRouter()
 router.register("tags", TagViewSet)
 router.register("profiles", StudentProfileViewSet)
 router.register("projects", ProjectViewSet)
+router.register("companies", CompanyViewSet)
 
 
 schema_view = get_schema_view(

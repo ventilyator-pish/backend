@@ -7,6 +7,8 @@ class Tag(models.Model):
     keyword = models.CharField(max_length=127)
     color = models.CharField(max_length=7)
 
+    intext_match = models.CharField(max_length=1023, help_text="keywords separated by ';' symbol", blank=True)
+
     is_profession = models.BooleanField(default=False)
 
     def __str__(self):
@@ -18,8 +20,14 @@ class Company(models.Model):
 
     description = models.TextField()
 
+    interest_tags = models.ManyToManyField(Tag, related_name="company_required_skills", blank=True)
+    skills = models.ManyToManyField(Tag, related_name="company_scope", blank=True)
+
     has_access = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Company[{self.id}] {self.name}"
 
 
 class Contact(models.Model):
@@ -45,8 +53,8 @@ class User(AbstractUser):
     subtitle = models.CharField(max_length=17, blank=True)
     company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, blank=True)
 
-    interest_tags = models.ManyToManyField(Tag, related_name="user_required_skills", null=True, blank=True)
-    skills = models.ManyToManyField(Tag, related_name="user_skills", null=True, blank=True)
+    interest_tags = models.ManyToManyField(Tag, related_name="user_required_skills", blank=True)
+    skills = models.ManyToManyField(Tag, related_name="user_skills", blank=True)
 
 
 class StudentProfile(models.Model):

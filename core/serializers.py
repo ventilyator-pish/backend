@@ -1,12 +1,18 @@
 from rest_framework import serializers
 
-from core.models import User, Tag, StudentProfile, Project
+from core.models import Company, User, Tag, StudentProfile, Project
 from core.utils.coverage import coverage
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
+        fields = "__all__"
+
+
+class CompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
         fields = "__all__"
 
 
