@@ -92,3 +92,19 @@ class Project(models.Model):
 
     def __str__(self):
         return f"Project[{self.id}] {self.name} of {self.company.name}"
+
+
+class StudentRequest(models.Model):
+    class StudentRequestState(models.TextChoices):
+        OPEN = "open"
+        ACCEPTED = "accepted"
+        REJECTED = "rejected"
+
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+
+    datetime = models.DateTimeField(auto_now=True)
+    state = models.CharField(StudentRequestState.choices, max_length=15)
+
+    def __str__(self):
+        return f"StudentRequest[{self.id}] {self.company.name} {self.student.isu}"
