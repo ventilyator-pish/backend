@@ -21,12 +21,29 @@ class ProjectViewSet(ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
+    @action(methods=["POST"], detail=True, url_path="request")
+    def make_request(self, request, *args, **kwargs):
+        if not request.user or not request.user.studentprofile:
+            raise ValidationError("Should be a student")
+
+        student_profile = request.user.studentprofile
+
+        project: Project = self.get_object()
+        project.responses.add(student_profile)
+        project.save()
+
+        return Response({"status": "ok!"})
+
 
 class StudentProfileViewSet(ModelViewSet):
     queryset = StudentProfile.objects.all().prefetch_related("user__skills").select_related("user")
     serializer_class = StudentProfileSerializer
 
     filterset_class = StudentProfileFilter
+
+    @action(methods=["POST"], detail=True, url_path="approve_response")
+    def approve(self, request, *args, **kwargs):
+        return Response({"status": "ok"})
 
 
 class CompanyViewSet(ModelViewSet):
