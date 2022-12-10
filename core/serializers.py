@@ -5,16 +5,6 @@ from core.models import Company, User, Tag, StudentProfile, Project, Review
 from core.utils.coverage import coverage
 
 
-class UserSerializer(serializers.ModelSerializer):
-    interest_tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), write_only=True)
-    skills_tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), write_only=True)
-
-    class Meta:
-        model = User
-        fields = "__all__"
-        ref_name = "custom_user_serializer"
-
-
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
@@ -73,3 +63,14 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = "__all__"
+
+
+class UserSerializer(serializers.ModelSerializer):
+    student = StudentProfileSerializer()
+    interest_tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), write_only=True)
+    skills_tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), write_only=True)
+
+    class Meta:
+        model = User
+        fields = "__all__"
+        ref_name = "custom_user_serializer"
