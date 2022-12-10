@@ -30,3 +30,7 @@ class StudentProfileFilter(filters.FilterSet):
     class Meta:
         model = StudentProfile
         fields = ["id", "tags"]
+
+
+class TagFilter(filters.FilterSet):
+    keyword = filters.CharFilter(lookup_expr='icontains')
