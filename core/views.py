@@ -5,9 +5,21 @@ from rest_framework.validators import ValidationError
 from rest_framework.response import Response
 
 from core.filters import StudentProfileFilter, TagFilter
-from core.models import Company, Tag, Project, StudentProfile, StudentRequest, Review
-from core.serializers import CompanySerializer, ReviewSerializer, TagSerializer, ProjectSerializer, StudentProfileSerializer
+from core.models import Company, Tag, Project, StudentProfile, StudentRequest, Review, User
+from core.serializers import (
+    UserSerializer,
+    CompanySerializer,
+    ReviewSerializer,
+    TagSerializer,
+    ProjectSerializer,
+    StudentProfileSerializer
+)
 from core.utils.parse_tags import parse_url_tags
+
+
+class UserViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class TagViewSet(GenericViewSet, ListModelMixin):
