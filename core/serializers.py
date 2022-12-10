@@ -24,8 +24,8 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class StudentProfileSerializer(serializers.ModelSerializer):
-    interest_tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), source="user.interest_tags")
-    skills_tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), source="user.skills")
+    interest_tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all())
+    skills_tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all())
 
     email = serializers.CharField(source="user.email")
     first_name = serializers.CharField(source="user.first_name")
