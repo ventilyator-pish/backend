@@ -24,8 +24,8 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class StudentProfileSerializer(serializers.ModelSerializer):
-    interest_tags = serializers.PrimaryKeyRelatedField(source="user.interest_tags")
-    skills_tags = serializers.PrimaryKeyRelatedField(source="user.skills")
+    interest_tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), source="user.interest_tags")
+    skills_tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), source="user.skills")
 
     email = serializers.CharField(source="user.email")
     first_name = serializers.CharField(source="user.first_name")
@@ -51,7 +51,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     company = serializers.ReadOnlyField()
-    student = serializers.PrimaryKeyRelatedField()
+    student = serializers.PrimaryKeyRelatedField(queryset=StudentProfile.objects.all())
 
     def validate(self, attrs):
         request = self.context["request"]
