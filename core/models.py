@@ -86,7 +86,7 @@ class Project(models.Model):
     tags = models.ManyToManyField(Tag, related_name="project_tags")
 
     required_skills = models.ManyToManyField(Tag, related_name="project_required_skills")
-    responses = models.ManyToManyField(StudentProfile)
+    team = models.ManyToManyField(StudentProfile)
 
     is_verified = models.BooleanField(default=False)
 
@@ -104,7 +104,7 @@ class StudentRequest(models.Model):
     student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
 
     datetime = models.DateTimeField(auto_now=True)
-    state = models.CharField(StudentRequestState.choices, max_length=15)
+    state = models.CharField(StudentRequestState.choices, default=StudentRequestState.OPEN, max_length=15)
 
     def __str__(self):
         return f"StudentRequest[{self.id}] {self.company.name} {self.student.isu}"
