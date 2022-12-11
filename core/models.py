@@ -62,7 +62,7 @@ class StudentProfile(models.Model):
 
     isu = models.CharField(max_length=1024)
 
-    desciption = models.TextField()
+    description = models.TextField()
 
     image = models.ImageField(upload_to="students/", null=True, blank=True)
 
