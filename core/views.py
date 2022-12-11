@@ -5,7 +5,7 @@ from rest_framework.validators import ValidationError
 from rest_framework.response import Response
 
 from core.filters import StudentProfileFilter, TagFilter
-from core.models import Company, Tag, Project, StudentProfile, StudentRequest, Review
+from core.models import Company, Tag, Project, StudentProfile, StudentRequest, Review, User
 from core.serializers import (
     CompanySerializer,
     ReviewSerializer,
@@ -38,6 +38,7 @@ class ProjectViewSet(ModelViewSet):
         StudentRequest.objects.get_or_create(
             student_profile=student_profile,
             project=project,
+            initiator=User.UserType.COMPANY
         )
 
         return Response({"status": "ok!"})

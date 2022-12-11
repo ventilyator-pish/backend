@@ -103,6 +103,8 @@ class StudentRequest(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
 
+    initiator = models.CharField(choices=User.UserType.choices, max_length=15, default=User.UserType.STUDENT)
+
     datetime = models.DateTimeField(auto_now=True)
     state = models.CharField(StudentRequestState.choices, default=StudentRequestState.OPEN, max_length=15)
 
