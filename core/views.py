@@ -234,7 +234,7 @@ class TinderViewSet(GenericViewSet):
 
         student_id = random.choice(students)
 
-        return Response(StudentProfileSerializer(StudentProfile.objects.get(id=student_id)).data)
+        return Response(StudentProfileSerializer(StudentProfile.objects.get(id=student_id), context={"request": self.request}).data)
 
     def _set_emotion(self, emotion: str) -> None:
         student = self.get_object()
