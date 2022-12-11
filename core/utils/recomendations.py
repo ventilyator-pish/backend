@@ -25,7 +25,7 @@ def collabarative_filtration(company: Company, top_k: int = 50) -> list[dict]:
         col_id = user_to_col.get(user_id)
 
         if row_id is not None and col_id is not None:
-            matrix[row_id, col_id] = emotion
+            matrix[row_id, col_id] = int(emotion == "like")
 
     normalized_matrix = normalize(matrix.tocsr()).tocsr()
     cosine_sim_matrix = normalized_matrix.dot(normalized_matrix.T)
