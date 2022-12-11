@@ -27,6 +27,10 @@ if os.path.exists(ENVS_DIR / "db.env"):
     load_dotenv(ENVS_DIR / "db.env")
 
 
+CELERY_BROKER_URL = os.getenv('ENT_REDIS_LOCATION', 'redis://127.0.0.1:6379')
+CELERY_RESULT_BACKEND = os.getenv('ENT_REDIS_LOCATION', 'redis://127.0.0.1:6379')
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 

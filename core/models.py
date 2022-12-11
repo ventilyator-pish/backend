@@ -90,7 +90,7 @@ class CrowdFunding(LifecycleModel):
 
     @hook(AFTER_CREATE)
     def on_publish(self):
-        send_email(self.project.company.user.email, f"Поздравляю, вы успешно открыли сбор средств для проекта {self.project.name}!")
+        send_email.delay(self.project.company.user.email, f"Поздравляю, вы успешно открыли сбор средств для проекта {self.project.name}!")
 
 
 class CrowdFundingDonation(LifecycleModel):
@@ -104,7 +104,7 @@ class CrowdFundingDonation(LifecycleModel):
         self.crowdfunding.current += self.amount
         self.crowdfunding.save()
 
-        send_email(self.project.company.user.email, f"Ваш проект {self.project.name} поддержали на {self.amount} единиц!")
+        send_email.delay(self.project.company.user.email, f"Ваш проект {self.project.name} поддержали на {self.amount} единиц!")
 
 
 class Project(LifecycleModel):
@@ -123,7 +123,7 @@ class Project(LifecycleModel):
 
     @hook(AFTER_CREATE)
     def on_accepted(self):
-        send_project_publication(self.id)
+        send_project_publication.delay(self.id)
 
     def __str__(self):
         return f"Project[{self.id}] {self.name} of {self.company.name}"
@@ -146,14 +146,14 @@ class StudentRequest(LifecycleModel):
 
     @hook(AFTER_UPDATE, when="state", was=StudentRequestState.OPEN, is_now=StudentRequestState.ACCEPTED)
     def on_accepted(self):
-        send_email(
+        send_email.delay(
             self.student.user.email,
             f"Поздравляю! Вас рассматривает компания {self.company.name} для проекта {self.project.name}. Подробнее."
         )
 
     @hook(AFTER_UPDATE, when="state", was=StudentRequestState.OPEN, is_now=StudentRequestState.REJECTED)
     def on_rejected(self):
-        send_email(
+        send_email.delay(
             self.student.user.email,
             f"К сожалению, компания {self.company.name} не рассматривает вашу кандидатуру для проекта {self.project.name}."
         )
@@ -171,7 +171,7 @@ class Review(LifecycleModel):
 
     @hook(AFTER_CREATE)
     def on_publish(self):
-        send_email(
+        send_email.delay(
             self.student.user.email,
             f"Вам оставила отзыва компания {self.company.name}!"
         )

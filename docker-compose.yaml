@@ -52,6 +52,21 @@ services:
      networks:
        - web-pish
 
+  celery:
+    image: celery
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    command: celery -A core worker -B -l INFO -P threads
+    env_file:
+      - environment/db.env
+      - environment/app.env
+    environment:
+      - ENT_REDIS_LOCATION=redis://redis:6379
+    networks:
+       - web-pish
+
 networks:
   web-pish: 
     name: web-pish
