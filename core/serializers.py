@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from core.exceptions import IsNotCompanyException
-from core.models import Company, User, Tag, StudentProfile, Project, Review, StudentRequest
+from core.models import Company, User, Tag, StudentProfile, Project, Review, StudentRequest, CrowdFunding
 from core.utils.coverage import coverage
 
 
@@ -100,4 +100,10 @@ class StudentRequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StudentRequest
+        fields = "__all__"
+
+
+class CrowdFundingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CrowdFunding
         fields = "__all__"

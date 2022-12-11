@@ -78,15 +78,29 @@ class StudentProfile(models.Model):
         return f"StudentProfile[{self.id}] {self.isu} {self.user.first_name}"
 
 
+class CrowdFunding(models.Model):
+    goal = models.IntegerField()
+
+    def __str__(self):
+        return f"CrowdFunding[{self.id}]"
+
+
+class CrowdFundingDonation(models.Model):
+    crowdfunding = models.OneToOneField(CrowdFunding, on_delete=models.CASCADE)
+    amount = models.IntegerField()
+
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
 class Project(models.Model):
     company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
+    crowdfunding = models.OneToOneField(CrowdFunding, on_delete=models.SET_NULL, null=True, blank=True)
 
     image = models.ImageField(upload_to="projects/")
-
     name = models.CharField(max_length=127)
     description = models.TextField()
-    tags = models.ManyToManyField(Tag, related_name="project_tags")
 
+    tags = models.ManyToManyField(Tag, related_name="project_tags")
     required_skills = models.ManyToManyField(Tag, related_name="project_required_skills")
     team = models.ManyToManyField(StudentProfile)
 

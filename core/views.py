@@ -5,7 +5,7 @@ from rest_framework.validators import ValidationError
 from rest_framework.response import Response
 
 from core.filters import StudentProfileFilter, TagFilter
-from core.models import Company, Tag, Project, StudentProfile, StudentRequest, Review, User
+from core.models import Company, Tag, Project, StudentProfile, StudentRequest, Review, User, CrowdFundingDonation, CrowdFunding
 from core.serializers import (
     CompanySerializer,
     ReviewSerializer,
@@ -13,6 +13,7 @@ from core.serializers import (
     ProjectSerializer,
     StudentProfileSerializer,
     StudentRequestSerializer,
+    CrowdFundingSerializer,
 )
 from core.utils.parse_tags import parse_url_tags
 
@@ -25,7 +26,7 @@ class TagViewSet(GenericViewSet, ListModelMixin):
 
 
 class ProjectViewSet(ModelViewSet):
-    queryset = Project.objects.all()
+    queryset = Project.objects.all().select_related("crowdfunding")
     serializer_class = ProjectSerializer
 
     @action(methods=["POST"], detail=True, url_path="request")
@@ -43,6 +44,22 @@ class ProjectViewSet(ModelViewSet):
         )
 
         return Response({"status": "ok!"})
+
+    @action(methods=["POST"], detail=True, url_path="donate")
+    def donate(self, request, *args, **kwargs):
+        project = self.get_object()
+        if not project.crowdfunding:
+            raise ValidationError("There is no crowdfunding")
+
+        if "amount" not in request.data:
+            raise ValidationError("There is no amount")
+
+        crowdfunding = project.crowdfunding
+        CrowdFundingDonation.objects.create(
+            crowdfunding=crowdfunding,
+            amount=request.data["amount"],
+            author=self.request.user
+        )
 
 
 class StudentProfileViewSet(ModelViewSet):
@@ -123,3 +140,12 @@ class StudentRequestViewSet(ModelViewSet):
         student_request.save()
 
         return Response({"status": "ok"})
+
+
+class CrowdFoundingViewSet(ModelViewSet):
+    queryset = CrowdFunding.objects.all()
+    serializer_class = CrowdFundingSerializer
+
+    class Meta:
+        model = CrowdFunding
+        fields = "__all__"
