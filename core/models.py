@@ -99,11 +99,8 @@ class Project(LifecycleModel):
         send_project_publication.delay(self.id)
 
     def __str__(self):
-        if not hasattr(self, "id"):
-            return ""
-
-        return f"Project[{self.id}] {self.name} of {self.company.name}"
-
+        return f"Project[{self.id}] {self.name} of {getattr(self.company, 'name', 'unknown')}"
+g
 
 class CrowdFunding(LifecycleModel):
     project = models.OneToOneField(Project, on_delete=models.SET_NULL, null=True, blank=True)
