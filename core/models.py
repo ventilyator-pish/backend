@@ -125,7 +125,7 @@ class CrowdFunding(LifecycleModel):
 
 
 class CrowdFundingDonation(LifecycleModel):
-    crowdfunding = models.OneToOneField(CrowdFunding, on_delete=models.CASCADE)
+    crowdfunding = models.ForeignKey(CrowdFunding, on_delete=models.CASCADE)
     amount = models.IntegerField()
 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
