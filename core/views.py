@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.validators import ValidationError
 from rest_framework.response import Response
 
-from core.filters import StudentProfileFilter, TagFilter, ReviewFilter
+from core.filters import StudentProfileFilter, TagFilter, ReviewFilter, ProjectFilter
 from core.models import Company, Tag, Project, StudentProfile, StudentRequest, Review, User, CrowdFundingDonation, CrowdFunding
 from core.serializers import (
     CompanySerializer,
@@ -28,6 +28,8 @@ class TagViewSet(GenericViewSet, ListModelMixin):
 class ProjectViewSet(ModelViewSet):
     queryset = Project.objects.all().select_related("crowdfunding")
     serializer_class = ProjectSerializer
+
+    filterset_fields = ["company_id"]
 
     def create(self, request, *args, **kwargs):
         image = request.data.get("image", b"")
