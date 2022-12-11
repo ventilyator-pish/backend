@@ -5,6 +5,7 @@ from django.db.models import Case, When
 
 from core.models import StudentProfile
 from core.utils.coverage import coverage
+from core.utils.recomendations import collabarative_filtration
 
 
 class StudentProfileFilter(filters.FilterSet):
@@ -20,9 +21,19 @@ class StudentProfileFilter(filters.FilterSet):
             student_tags[student_id].append(tag_id)
             students.append(student_id)
 
-        coverages = [coverage(student_tags[student], required_tags) for student in students]
-        student_coverages = sorted(zip(coverages, students), reverse=True)
-        top_students_ids = [student for c, student in student_coverages if c > 0]
+        filtration_coefficient = {s: 1 for s in students}
+
+        if self.request.user:
+            top_users = collabarative_filtration(self.request.user.company)
+
+            for row in top_users:
+                filtration_coefficient[row["student_id"]] = 1 + row["weight"]
+
+        score = [coverage(student_tags[student], required_tags) * filtration_coefficient[student] for student in students]
+
+        student_scores = sorted(zip(score, students), reverse=True)
+        top_students_ids = [student for c, student in student_scores if c > 0]
+
         preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(top_students_ids)])
 
         return queryset.filter(id__in=top_students_ids).order_by(preserved)

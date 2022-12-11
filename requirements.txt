@@ -48,3 +48,4 @@ django-lifecycle==1.0.0
 celery
 scipy
 pandas
+scikit-learn
