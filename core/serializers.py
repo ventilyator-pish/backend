@@ -38,6 +38,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    team = StudentProfileSerializer(many=True)
     company_id = serializers.SerializerMethodField()
     student_id = serializers.SerializerMethodField()
 
@@ -95,6 +96,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class StudentRequestSerializer(serializers.ModelSerializer):
     project = ProjectSerializer(read_only=True)
+    student = StudentProfileSerializer(read_only=True)
 
     class Meta:
         model = StudentRequest
