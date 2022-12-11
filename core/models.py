@@ -179,9 +179,8 @@ class StudentRequest(LifecycleModel):
                 f"К сожалению, студент {self.student.user.first_name} пока не готов рассматривать место в проекте {self.project.name}."
             )
 
-
     def __str__(self):
-        return f"StudentRequest[{self.id}] {self.company.name} {self.student.isu}"
+        return f"StudentRequest[{self.id}] {self.company_idg} {self.student.isu}"
 
 
 class Review(LifecycleModel):

@@ -44,6 +44,7 @@ class ProjectViewSet(ModelViewSet):
 
         StudentRequest.objects.get_or_create(
             student=student_profile,
+            company=request.user.company,
             project=project,
             initiator=User.UserType.STUDENT
         )
