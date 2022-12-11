@@ -38,6 +38,18 @@ class StudentProfileSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    company_id = serializers.SerializerMethodField()
+    student_id = serializers.SerializerMethodField()
+
+    def get_company_id(self, project: Project) -> int:
+        return int(project.company_id)
+
+    def get_student_id(self, project: Project) -> int:
+        if not project.company.user or not project.company.user.studentprofile:
+            return
+
+        return int(project.company.user.studentprofile.id)
+
     class Meta:
         model = Project
         fields = "__all__"
