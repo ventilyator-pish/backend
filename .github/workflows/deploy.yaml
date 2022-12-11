@@ -1,34 +1,34 @@
-name: Deploy
-
-on:
-    push:
-        branches:
-            - main
-
-jobs:
-    deploy:
-        runs-on: ubuntu-latest
-
-        steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-node@v1
-              with:
-                node-version: 12.x
-            - name: Setup
-              run: |
-                sudo apt-get update
-                sudo apt-get install rsync -y
-                mkdir "$HOME/.ssh"
-                echo "${{ secrets.vps_private_key }}" > "$HOME/.ssh/key"
-                echo "${{ secrets.APP_ENV }}" > "$HOME/app.env"
-                echo "${{ secrets.YANDEX_PASSWORD }}" >> "$HOME/app.env"
-                echo "${{ secrets.DB_ENV }}" > "$HOME/db.env"
-                chmod 600 "$HOME/.ssh/key"
-            - name: Delivery
-              run: |
-                rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete --exclude './environment' --exclude './static' --exclude './media' --exclude './logs' . ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }}:~/backend/
-                rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" $HOME/app.env ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }}:~/backend/environment/app.env
-                rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" $HOME/db.env ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }}:~/backend/environment/db.env
-            - name: Building on server
-              run: |
-                ssh -i $HOME/.ssh/key ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }} 'cd backend && docker-compose up -d --build'
+#name: Deploy
+#
+#on:
+#    push:
+#        branches:
+#            - main
+#
+#jobs:
+#    deploy:
+#        runs-on: ubuntu-latest
+#
+#        steps:
+#            - uses: actions/checkout@v2
+#            - uses: actions/setup-node@v1
+#              with:
+#                node-version: 12.x
+#            - name: Setup
+#              run: |
+#                sudo apt-get update
+#                sudo apt-get install rsync -y
+#                mkdir "$HOME/.ssh"
+#                echo "${{ secrets.vps_private_key }}" > "$HOME/.ssh/key"
+#                echo "${{ secrets.APP_ENV }}" > "$HOME/app.env"
+#                echo "${{ secrets.YANDEX_PASSWORD }}" >> "$HOME/app.env"
+#                echo "${{ secrets.DB_ENV }}" > "$HOME/db.env"
+#                chmod 600 "$HOME/.ssh/key"
+#            - name: Delivery
+#              run: |
+#                rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" --archive --compress --delete --exclude './environment' --exclude './static' --exclude './media' --exclude './logs' . ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }}:~/backend/
+#                rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" $HOME/app.env ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }}:~/backend/environment/app.env
+#                rsync -e "ssh -i $HOME/.ssh/key -o StrictHostKeyChecking=no" $HOME/db.env ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }}:~/backend/environment/db.env
+#            - name: Building on server
+#              run: |
+#                ssh -i $HOME/.ssh/key ${{ secrets.VPS_USER_NAME }}@${{ secrets.VPS_SERVER_NAME }} 'cd backend && docker-compose up -d --build'
