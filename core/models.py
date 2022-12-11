@@ -99,6 +99,9 @@ class Project(LifecycleModel):
         send_project_publication.delay(self.id)
 
     def __str__(self):
+        if hasattr(self, "id"):
+            return ""
+
         return f"Project[{self.id}] {self.name} of {self.company.name}"
 
 
