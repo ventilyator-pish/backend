@@ -34,3 +34,13 @@ class StudentProfileFilter(filters.FilterSet):
 
 class TagFilter(filters.FilterSet):
     keyword = filters.CharFilter(lookup_expr='icontains')
+
+
+class ReviewFilter(filters.FilterSet):
+    def filter_queryset(self, queryset):
+        student_id = self.request.query_params.get("student", None)
+
+        if not student_id:
+            return queryset
+
+        return queryset.filter(student__id=student_id)

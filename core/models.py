@@ -86,6 +86,7 @@ class StudentProfile(LifecycleModel):
             name=f"Компания студента",
             description=f"Компания от {self.user.first_name}"
         )
+        self.user.save()
 
 
 class Project(LifecycleModel):

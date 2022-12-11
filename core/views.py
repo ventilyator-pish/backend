@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.validators import ValidationError
 from rest_framework.response import Response
 
-from core.filters import StudentProfileFilter, TagFilter
+from core.filters import StudentProfileFilter, TagFilter, ReviewFilter
 from core.models import Company, Tag, Project, StudentProfile, StudentRequest, Review, User, CrowdFundingDonation, CrowdFunding
 from core.serializers import (
     CompanySerializer,
@@ -105,6 +105,8 @@ class CompanyViewSet(ModelViewSet):
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+
+    filterset_class = ReviewFilter
 
 
 class StudentRequestViewSet(ModelViewSet):
