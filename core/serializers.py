@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from core.exceptions import IsNotCompanyException
-from core.models import Company, User, Tag, StudentProfile, Project, Review
+from core.models import Company, User, Tag, StudentProfile, Project, Review, StudentRequest
 from core.utils.coverage import coverage
 
 
@@ -91,3 +91,9 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = "__all__"
         ref_name = "custom_user_serializer"
+
+
+class StudentRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentRequest
+        fields = "__all__"

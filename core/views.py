@@ -11,7 +11,8 @@ from core.serializers import (
     ReviewSerializer,
     TagSerializer,
     ProjectSerializer,
-    StudentProfileSerializer
+    StudentProfileSerializer,
+    StudentRequestSerializer,
 )
 from core.utils.parse_tags import parse_url_tags
 
@@ -38,7 +39,7 @@ class ProjectViewSet(ModelViewSet):
         StudentRequest.objects.get_or_create(
             student_profile=student_profile,
             project=project,
-            initiator=User.UserType.COMPANY
+            initiator=User.UserType.STUDENT
         )
 
         return Response({"status": "ok!"})
@@ -112,3 +113,8 @@ class CompanyViewSet(ModelViewSet):
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+
+
+class StudentRequestViewSet(ModelViewSet):
+    queryset = StudentRequest.objects.all()
+    serializer_class = StudentRequestSerializer
