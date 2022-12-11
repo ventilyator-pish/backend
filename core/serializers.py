@@ -44,6 +44,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     required_skills = TagSerializer(many=True, required=False)
     skills = TagSerializer(many=True, required=False)
+    tags = TagSerializer(many=True, required=False)
 
     def get_company_id(self, project: Project) -> int:
         return int(project.company_id)
