@@ -60,7 +60,7 @@ class User(AbstractUser):
     skills = models.ManyToManyField(Tag, related_name="user_skills", blank=True)
 
 
-class StudentProfile(models.Model):
+class StudentProfile(LifecycleModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     isu = models.CharField(max_length=1024)
@@ -79,6 +79,13 @@ class StudentProfile(models.Model):
 
     def __str__(self):
         return f"StudentProfile[{self.id}] {self.isu} {self.user.first_name}"
+
+    @hook(AFTER_CREATE)
+    def create_company(self):
+        self.user.company = Company.objects.create(
+            name=f"Компания студента",
+            description=f"Компания от {self.user.first_name}"
+        )
 
 
 class Project(LifecycleModel):

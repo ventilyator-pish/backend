@@ -57,6 +57,8 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data["image"] = self.context["request"].image
+        validated_data["company"] = self.context["requeset"].user.company
+
         return super().create(validated_data)
 
     class Meta:
