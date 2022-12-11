@@ -67,7 +67,9 @@ class ProjectViewSet(ModelViewSet):
             author=self.request.user
         )
 
+        return Response({"status": "ok"})
 
+g
 class StudentProfileViewSet(ModelViewSet):
     queryset = StudentProfile.objects.all().prefetch_related(
         "user__skills",
