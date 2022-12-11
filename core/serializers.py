@@ -55,6 +55,10 @@ class ProjectSerializer(serializers.ModelSerializer):
         except:
             pass
 
+    def create(self, validated_data):
+        validated_data["image"] = self.context["request"].image
+        return super().create(validated_data)
+
     class Meta:
         model = Project
         fields = "__all__"

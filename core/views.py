@@ -31,7 +31,7 @@ class ProjectViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         image = request.data.get("image", b"")
-        print(image)
+        self.request.image = image
         return super().create(request, *args, **kwargs)
 
     @action(methods=["POST"], detail=True, url_path="request")
@@ -91,11 +91,15 @@ class CompanyViewSet(ModelViewSet):
 
         url = request.data["url"]
 
+        start_tag_count = company.interest_tags.count()
+
         new_tags = parse_url_tags(url, Tag.objects.all())
         company.interest_tags.add(*new_tags)
         company.save()
 
-        return Response({"status": "ok"})
+        end_tag_count = company.interest_tags.count()
+
+        return Response({"status": "ok", "delta": end_tag_count - start_tag_count})
 
 
 class ReviewViewSet(ModelViewSet):
@@ -110,6 +114,25 @@ class StudentRequestViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.queryset.exclude(state=StudentRequest.StudentRequestState.OPEN)
         return queryset
+
+    @action(methods=["POST"], detail=True, url_path="update_tags")
+    def update_tags(self, request, *args, **kwargs):
+        user = self.request.user
+
+        if "url" not in request.data:
+            raise ValidationError("You should specify url")
+
+        url = request.data["url"]
+
+        start_tag_count = user.interest_tags.count()
+
+        new_tags = parse_url_tags(url, Tag.objects.all())
+        user.interest_tags.add(*new_tags)
+        user.save()
+
+        end_tag_count = user.interest_tags.count()
+
+        return Response({"status": "ok", "delta": end_tag_count - start_tag_count})
 
     @action(methods=["POST"], detail=True, url_path="make_response")
     def make_response(self, request, *args, **kwargs):
