@@ -44,7 +44,7 @@ class ProjectViewSet(ModelViewSet):
 
         StudentRequest.objects.get_or_create(
             student=student_profile,
-            company=request.user.company,
+            company=project.company,
             project=project,
             initiator=User.UserType.STUDENT
         )
@@ -79,6 +79,26 @@ class StudentProfileViewSet(ModelViewSet):
     serializer_class = StudentProfileSerializer
 
     filterset_class = StudentProfileFilter
+
+    @action(methods=["POST"], detail=True, url_path="invite")
+    def invite(self, request, *args, **kwargs):
+        if not request.user or not request.user.company:
+            raise ValidationError("Should be a company")
+
+        if "project_id" not in self.request.data:
+            raise ValidationError("You should specify project_id")
+
+        student_profile = self.get_object()
+        project = Project.objects.get(id=self.request.data["project_id"])
+
+        StudentRequest.objects.get_or_create(
+            student=student_profile,
+            company=request.user.company,
+            project=project,
+            initiator=User.UserType.COMPANY
+        )
+
+        return Response({"status": "ok!"})
 
 
 class CompanyViewSet(ModelViewSet):
