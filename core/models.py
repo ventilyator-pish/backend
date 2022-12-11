@@ -180,7 +180,7 @@ class StudentRequest(LifecycleModel):
             )
 
     def __str__(self):
-        return f"StudentRequest[{self.id}] {self.company_idg} {self.student.isu}"
+        return f"StudentRequest[{self.id}] {self.company_id} {self.student.isu}"
 
 
 class Review(LifecycleModel):
@@ -195,4 +195,21 @@ class Review(LifecycleModel):
         send_email.delay(
             self.student.user.email,
             f"Вам оставила отзыва компания {self.company.name}!"
+        )
+
+
+class CompanyStudentEmotion(LifecycleModel):
+    class CompanyEmotion(models.TextChoices):
+        LIKE = "like"
+        DISLIKE = "dislike"
+
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+    emotion = models.CharField(choices=CompanyEmotion.choices)
+
+    @hook(AFTER_CREATE, when="emotion", is_now="like")
+    def on_like(self):
+        send_email(
+            self.student.user.email,
+            f"Вы понравились компании {self.company.name}! Может самое время с ними связаться? ;)"
         )

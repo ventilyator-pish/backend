@@ -1,11 +1,15 @@
+import random
+
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.mixins import ListModelMixin
 from rest_framework.decorators import action
 from rest_framework.validators import ValidationError
 from rest_framework.response import Response
 
+from core.exceptions import NotEnoughStudents
 from core.filters import StudentProfileFilter, TagFilter, ReviewFilter
-from core.models import Company, Tag, Project, StudentProfile, StudentRequest, Review, User, CrowdFundingDonation, CrowdFunding
+from core.models import Company, Tag, Project, StudentProfile, StudentRequest, Review, User, CrowdFundingDonation, \
+    CrowdFunding, CompanyStudentEmotion
 from core.serializers import (
     CompanySerializer,
     ReviewSerializer,
@@ -214,3 +218,39 @@ class CrowdFoundingViewSet(ModelViewSet):
     class Meta:
         model = CrowdFunding
         fields = "__all__"
+
+
+class TinderViewSet(GenericViewSet):
+    queryset = StudentProfile.objects.all()
+    serializer_class = StudentProfileSerializer
+
+    @action(methods=["GET"], detail=False, url_path="random_pick")
+    def get_random(self):
+        already_picked_ids = CompanyStudentEmotion.objects.values_list("student__id", flat=True)
+        students = StudentProfile.objects.exclude(id__in=already_picked_ids).values_list("id", flat=True)
+
+        if not students:
+            raise NotEnoughStudents()
+
+        student_id = random.choice(students)
+
+        return StudentProfile.objects.get(id=student_id)
+
+    def _set_emotion(self, emotion: str) -> None:
+        student = self.get_object()
+
+        CompanyStudentEmotion.objects.create(
+            student=student,
+            company=self.request.user.company,
+            emotion=emotion,
+        )
+
+    @action(methods=["GET"], detail=True, url_path="like")
+    def like(self):
+        self._set_emotion(CompanyStudentEmotion.CompanyEmotion.LIKE)
+        return Response({"status": "ok"})
+
+    @action(methods=["GET"], detail=True, url_path="dislike")
+    def dislike(self):
+        self._set_emotion(CompanyStudentEmotion.CompanyEmotion.DISLIKE)
+        return Response({"status": "ok"})

@@ -14,3 +14,8 @@ def custom_exception_handler(exception: Exception, context: dict):
 class IsNotCompanyException(APIException):
     status_code = 400
     default_code = "is_not_company"
+
+
+class NotEnoughStudents(APIException):
+    status_code = 400
+    default_code = "not_enough_students"
