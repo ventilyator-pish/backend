@@ -85,6 +85,10 @@ class StudentRequestViewSet(ModelViewSet):
     queryset = StudentRequest.objects.all()
     serializer_class = StudentRequestSerializer
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.queryset.exclude(state=StudentRequest.StudentRequestState.OPEN)
+        return queryset
+
     @action(methods=["POST"], detail=True, url_path="make_response")
     def make_response(self, request, *args, **kwargs):
         if not request.user or not request.user.company:
