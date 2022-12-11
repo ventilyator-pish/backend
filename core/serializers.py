@@ -116,7 +116,7 @@ class StudentRequestSerializer(serializers.ModelSerializer):
 class CrowdFundingSerializer(serializers.ModelSerializer):
     project = ProjectSerializer(read_only=True)
     project_id = serializers.PrimaryKeyRelatedField(source="project", queryset=Project.objects.all(), write_only=True)
-    current = serializers.ReadOnlyField()
+    current = serializers.IntegerField(default=0)
 
     class Meta:
         model = CrowdFunding
