@@ -116,9 +116,19 @@ class StudentRequestViewSet(ModelViewSet):
     queryset = StudentRequest.objects.all()
     serializer_class = StudentRequestSerializer
 
-    def list(self, request, *args, **kwargs):
+    def get_queryset(self):
         queryset = self.queryset.exclude(state=StudentRequest.StudentRequestState.OPEN)
-        return Response(StudentRequestSerializer(queryset, many=True, context={"request": self.request}).data)
+
+        initiator = self.request.query_params.get("initiator", None)
+        obj_id = int(self.request.query_params.get("id", 0))
+
+        if not initiator:
+            return queryset
+
+        if initiator == User.UserType.STUDENT:
+            return queryset.filter(student_id=obj_id)
+
+        return queryset.filter(project_id=obj_id)
 
     @action(methods=["POST"], detail=True, url_path="update_tags")
     def update_tags(self, request, *args, **kwargs):
