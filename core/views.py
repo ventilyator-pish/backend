@@ -225,7 +225,7 @@ class TinderViewSet(GenericViewSet):
     serializer_class = StudentProfileSerializer
 
     @action(methods=["GET"], detail=False, url_path="random_pick")
-    def get_random(self):
+    def get_random(self, request, *args, **kwargs):
         already_picked_ids = CompanyStudentEmotion.objects.values_list("student__id", flat=True)
         students = StudentProfile.objects.exclude(id__in=already_picked_ids).values_list("id", flat=True)
 
