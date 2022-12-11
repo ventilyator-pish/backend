@@ -29,6 +29,11 @@ class ProjectViewSet(ModelViewSet):
     queryset = Project.objects.all().select_related("crowdfunding")
     serializer_class = ProjectSerializer
 
+    def create(self, request, *args, **kwargs):
+        image = request.data.get("image", b"")
+        print(image)
+        return super().create(request, *args, **kwargs)
+
     @action(methods=["POST"], detail=True, url_path="request")
     def make_request(self, request, *args, **kwargs):
         if not request.user or not request.user.studentprofile:

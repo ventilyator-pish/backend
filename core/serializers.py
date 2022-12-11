@@ -38,9 +38,12 @@ class StudentProfileSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    team = StudentProfileSerializer(many=True)
+    team = StudentProfileSerializer(many=True, read_only=True, required=False)
     company_id = serializers.SerializerMethodField()
     student_id = serializers.SerializerMethodField()
+
+    required_skills = TagSerializer(many=True, required=False)
+    skills = TagSerializer(many=True, required=False)
 
     def get_company_id(self, project: Project) -> int:
         return int(project.company_id)

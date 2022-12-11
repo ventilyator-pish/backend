@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django_lifecycle import LifecycleModel, hook, AFTER_UPDATE, AFTER_CREATE
+
+from core.celery import send_email, send_project_publication
 
 
 class Tag(models.Model):
@@ -80,9 +83,14 @@ class StudentProfile(models.Model):
 
 class CrowdFunding(models.Model):
     goal = models.IntegerField()
+    current = models.IntegerField()
 
     def __str__(self):
         return f"CrowdFunding[{self.id}]"
+
+    @hook(AFTER_CREATE)
+    def on_publish(self):
+        send_email(self.project.company.user.email, f"Поздравляю, вы успешно открыли сбор средств для проекта {self.project.name}!")
 
 
 class CrowdFundingDonation(models.Model):
@@ -90,6 +98,13 @@ class CrowdFundingDonation(models.Model):
     amount = models.IntegerField()
 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    @hook(AFTER_CREATE)
+    def on_donation(self):
+        self.crowdfunding.current += self.amount
+        self.crowdfunding.save()
+
+        send_email(self.project.company.user.email, f"Ваш проект {self.project.name} поддержали на {self.amount} единиц!")
 
 
 class Project(models.Model):
@@ -106,11 +121,15 @@ class Project(models.Model):
 
     is_verified = models.BooleanField(default=False)
 
+    @hook(AFTER_CREATE)
+    def on_accepted(self):
+        send_project_publication(self.id)
+
     def __str__(self):
         return f"Project[{self.id}] {self.name} of {self.company.name}"
 
 
-class StudentRequest(models.Model):
+class StudentRequest(LifecycleModel):
     class StudentRequestState(models.TextChoices):
         OPEN = "open"
         ACCEPTED = "accepted"
@@ -125,6 +144,20 @@ class StudentRequest(models.Model):
     datetime = models.DateTimeField(auto_now=True)
     state = models.CharField(StudentRequestState.choices, default=StudentRequestState.OPEN, max_length=15)
 
+    @hook(AFTER_UPDATE, when="state", was=StudentRequestState.OPEN, is_now=StudentRequestState.ACCEPTED)
+    def on_accepted(self):
+        send_email(
+            self.student.user.email,
+            f"Поздравляю! Вас рассматривает компания {self.company.name} для проекта {self.project.name}. Подробнее."
+        )
+
+    @hook(AFTER_UPDATE, when="state", was=StudentRequestState.OPEN, is_now=StudentRequestState.REJECTED)
+    def on_rejected(self):
+        send_email(
+            self.student.user.email,
+            f"К сожалению, компания {self.company.name} не рассматривает вашу кандидатуру для проекта {self.project.name}."
+        )
+
     def __str__(self):
         return f"StudentRequest[{self.id}] {self.company.name} {self.student.isu}"
 
@@ -135,3 +168,10 @@ class Review(models.Model):
 
     updated_at = models.DateTimeField(auto_now=True)
     review = models.TextField()
+
+    @hook(AFTER_CREATE)
+    def on_publish(self):
+        send_email(
+            self.student.user.email,
+            f"Вам оставила отзыва компания {self.company.name}!"
+        )
