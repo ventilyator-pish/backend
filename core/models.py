@@ -81,7 +81,30 @@ class StudentProfile(models.Model):
         return f"StudentProfile[{self.id}] {self.isu} {self.user.first_name}"
 
 
+class Project(LifecycleModel):
+    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
+
+    image = models.ImageField(upload_to="projects/")
+    name = models.CharField(max_length=127)
+    description = models.TextField()
+
+    tags = models.ManyToManyField(Tag, related_name="project_tags")
+    required_skills = models.ManyToManyField(Tag, related_name="project_required_skills")
+    team = models.ManyToManyField(StudentProfile)
+
+    is_verified = models.BooleanField(default=False)
+
+    @hook(AFTER_CREATE)
+    def on_accepted(self):
+        send_project_publication.delay(self.id)
+
+    def __str__(self):
+        return f"Project[{self.id}] {self.name} of {self.company.name}"
+
+
 class CrowdFunding(LifecycleModel):
+    project = models.OneToOneField(Project, on_delete=models.SET_NULL, null=True, blank=True)
+
     goal = models.IntegerField()
     current = models.IntegerField()
 
@@ -104,29 +127,7 @@ class CrowdFundingDonation(LifecycleModel):
         self.crowdfunding.current += self.amount
         self.crowdfunding.save()
 
-        send_email.delay(self.project.company.user.email, f"Ваш проект {self.project.name} поддержали на {self.amount} единиц!")
-
-
-class Project(LifecycleModel):
-    company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
-    crowdfunding = models.OneToOneField(CrowdFunding, on_delete=models.SET_NULL, null=True, blank=True)
-
-    image = models.ImageField(upload_to="projects/")
-    name = models.CharField(max_length=127)
-    description = models.TextField()
-
-    tags = models.ManyToManyField(Tag, related_name="project_tags")
-    required_skills = models.ManyToManyField(Tag, related_name="project_required_skills")
-    team = models.ManyToManyField(StudentProfile)
-
-    is_verified = models.BooleanField(default=False)
-
-    @hook(AFTER_CREATE)
-    def on_accepted(self):
-        send_project_publication.delay(self.id)
-
-    def __str__(self):
-        return f"Project[{self.id}] {self.name} of {self.company.name}"
+        send_email.delay(self.crowdfunding.project.company.user.email, f"Ваш проект {self.crowdfunding.project.name} поддержали на {self.amount} единиц!")
 
 
 class StudentRequest(LifecycleModel):
