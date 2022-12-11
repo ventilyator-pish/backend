@@ -239,3 +239,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'core.User'
 
 ID_SESSION_KEY = "session_id"
+
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'egorovmichil01@yandex.ru'
+EMAIL_HOST_PASSWORD = os.getenv("YANDEX_PASSWORD")

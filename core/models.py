@@ -81,7 +81,7 @@ class StudentProfile(models.Model):
         return f"StudentProfile[{self.id}] {self.isu} {self.user.first_name}"
 
 
-class CrowdFunding(models.Model):
+class CrowdFunding(LifecycleModel):
     goal = models.IntegerField()
     current = models.IntegerField()
 
@@ -93,7 +93,7 @@ class CrowdFunding(models.Model):
         send_email(self.project.company.user.email, f"Поздравляю, вы успешно открыли сбор средств для проекта {self.project.name}!")
 
 
-class CrowdFundingDonation(models.Model):
+class CrowdFundingDonation(LifecycleModel):
     crowdfunding = models.OneToOneField(CrowdFunding, on_delete=models.CASCADE)
     amount = models.IntegerField()
 
@@ -107,7 +107,7 @@ class CrowdFundingDonation(models.Model):
         send_email(self.project.company.user.email, f"Ваш проект {self.project.name} поддержали на {self.amount} единиц!")
 
 
-class Project(models.Model):
+class Project(LifecycleModel):
     company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
     crowdfunding = models.OneToOneField(CrowdFunding, on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -162,7 +162,7 @@ class StudentRequest(LifecycleModel):
         return f"StudentRequest[{self.id}] {self.company.name} {self.student.isu}"
 
 
-class Review(models.Model):
+class Review(LifecycleModel):
     company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
     student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
 

@@ -21,6 +21,7 @@ jobs:
                 mkdir "$HOME/.ssh"
                 echo "${{ secrets.vps_private_key }}" > "$HOME/.ssh/key"
                 echo "${{ secrets.APP_ENV }}" > "$HOME/app.env"
+                echo "${{ secrets.YANDEX_PASSWORD }}" >> "$HOME/app.env"
                 echo "${{ secrets.DB_ENV }}" > "$HOME/db.env"
                 chmod 600 "$HOME/.ssh/key"
             - name: Delivery

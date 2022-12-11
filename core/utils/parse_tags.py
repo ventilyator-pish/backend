@@ -35,8 +35,9 @@ class HHParser(AbstractParser):
 
         vacancy_title = soup.find("div", {"class": "vacancy-title"}).text or ""
         vacancy_section = soup.find("div", {"class": "vacancy-section"}).text or ""
+        resume_section = soup.find("div", {"class": "resume-wrapper"}).text or ""
 
-        return " ".join([vacancy_title, vacancy_section])
+        return " ".join([vacancy_title, vacancy_section, resume_section])
 
 
 class UniversalParser(AbstractParser):

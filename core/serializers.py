@@ -112,6 +112,8 @@ class StudentRequestSerializer(serializers.ModelSerializer):
 
 
 class CrowdFundingSerializer(serializers.ModelSerializer):
+    project = ProjectSerializer()
+
     class Meta:
         model = CrowdFunding
         fields = "__all__"
