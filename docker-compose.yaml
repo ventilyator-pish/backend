@@ -39,8 +39,8 @@ services:
           - "4022:80"
       command: [ "/bin/bash", "-c", "nginx -g 'daemon off;'" ]
       volumes:
-          - ./static:/static
-          - ./media:/media
+          - statics_data:/app/static
+          - media_data:/app/media
           - ./nginx/dev:/etc/nginx/conf.d
           - ../front/build:/var/www/html/app
       networks:
@@ -76,3 +76,5 @@ volumes:
     name: statics_data
   pg_datas:
     name: pg_datas
+  media_data:
+    name: media_data
