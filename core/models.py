@@ -100,7 +100,7 @@ class Project(LifecycleModel):
 
     def __str__(self):
         return f"Project[{self.id}] {self.name} of {getattr(self.company, 'name', 'unknown')}"
-g
+
 
 class CrowdFunding(LifecycleModel):
     project = models.OneToOneField(Project, on_delete=models.SET_NULL, null=True, blank=True)
