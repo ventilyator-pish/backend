@@ -245,12 +245,12 @@ class TinderViewSet(GenericViewSet):
             emotion=emotion,
         )
 
-    @action(methods=["GET"], detail=True, url_path="like")
+    @action(methods=["POST"], detail=True, url_path="like")
     def like(self):
         self._set_emotion(CompanyStudentEmotion.CompanyEmotion.LIKE)
         return Response({"status": "ok"})
 
-    @action(methods=["GET"], detail=True, url_path="dislike")
+    @action(methods=["POST"], detail=True, url_path="dislike")
     def dislike(self):
         self._set_emotion(CompanyStudentEmotion.CompanyEmotion.DISLIKE)
         return Response({"status": "ok"})
