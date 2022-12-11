@@ -38,9 +38,12 @@ def collabarative_filtration(company: Company, top_k: int = 50) -> list[dict]:
         row = cosine_sim_matrix[row_id]
         if row.nnz > top_k:
             work_row = row.tolil()
-            work_row[0, row.nonzero()[1][np.argsort(row.data)[-m:]]] = 0
+            work_row[0, row.nonzero()[1][np.argsort(row.data)[-top_k:]]] = 0
             row = row - work_row.tocsr()
         rows.append(row)
+
+    if not rows:
+        return []
 
     topk_matrix = vstack(rows)
     topk_matrix = normalize(topk_matrix)
