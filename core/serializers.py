@@ -46,10 +46,9 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_student_id(self, project: Project) -> int:
         try:
-            a = project.company.user or project.company.user.studentprofile
-            return
-        except:
             return int(project.company.user.studentprofile.id)
+        except:
+            pass
 
     class Meta:
         model = Project
