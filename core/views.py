@@ -125,7 +125,9 @@ class StudentRequestViewSet(ModelViewSet):
         if not initiator:
             return queryset
 
-g
+        if initiator == User.UserType.STUDENT:
+            return queryset.filter(project_id=obj_id)
+
         return queryset.filter(student_id=obj_id)
 
     @action(methods=["POST"], detail=True, url_path="update_tags")
