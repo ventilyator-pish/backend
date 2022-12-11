@@ -90,7 +90,10 @@ class StudentRequestViewSet(ModelViewSet):
         if not request.user or not request.user.company:
             raise ValidationError("You should has company")
 
-        if "decision" not in request.data or request.data["decision"] not in StudentRequest.StudentRequestState.choices:
+        if "decision" not in request.data or request.data["decision"] not in [
+            StudentRequest.StudentRequestState.ACCEPTED,
+            StudentRequest.StudentRequestState.REJECTED,
+        ]:
             raise ValidationError(f"Decision key should be in {StudentRequest.StudentRequestState.choices}")
 
         student_request = self.get_object()
