@@ -47,7 +47,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, required=False)
 
     def get_company_id(self, project: Project) -> int:
-        return int(project.company_id)
+        return project.company_id
 
     def get_student_id(self, project: Project) -> int:
         try:
