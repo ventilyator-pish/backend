@@ -94,6 +94,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class StudentRequestSerializer(serializers.ModelSerializer):
+    project = ProjectSerializer(read_only=True)
+
     class Meta:
         model = StudentRequest
         fields = "__all__"

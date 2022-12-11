@@ -100,8 +100,9 @@ class StudentRequest(models.Model):
         ACCEPTED = "accepted"
         REJECTED = "rejected"
 
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
     student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True)
 
     initiator = models.CharField(choices=User.UserType.choices, max_length=15, default=User.UserType.STUDENT)
 

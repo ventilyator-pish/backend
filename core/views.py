@@ -66,7 +66,7 @@ class StudentProfileViewSet(ModelViewSet):
         if "decision" not in request.data or request["decision"] not in StudentRequest.StudentRequestState.choices:
             raise ValidationError(f"Decision key should be in {StudentRequest.StudentRequestState.choices}")
 
-        project = Project.objects.get()
+        project = Project.objects.get(id=request.data["project_id"])
         company = request.user.company
 
         if project.company != company:
