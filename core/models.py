@@ -205,7 +205,7 @@ class CompanyStudentEmotion(LifecycleModel):
 
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
-    emotion = models.CharField(choices=CompanyEmotion.choices)
+    emotion = models.CharField(choices=CompanyEmotion.choices, max_length=15)
 
     @hook(AFTER_CREATE, when="emotion", is_now="like")
     def on_like(self):
