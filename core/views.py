@@ -55,40 +55,6 @@ class StudentProfileViewSet(ModelViewSet):
 
     filterset_class = StudentProfileFilter
 
-    @action(methods=["POST"], detail=True, url_path="make_response")
-    def make_response(self, request, *args, **kwargs):
-        if not request.user or not request.user.company:
-            raise ValidationError("You should has company")
-
-        if "project_id" not in request.data:
-            raise ValidationError("You should specify project_id")
-
-        if "decision" not in request.data or request["decision"] not in StudentRequest.StudentRequestState.choices:
-            raise ValidationError(f"Decision key should be in {StudentRequest.StudentRequestState.choices}")
-
-        project = Project.objects.get(id=request.data["project_id"])
-        company = request.user.company
-
-        if project.company != company:
-            raise ValidationError("You should by an owner of a project")
-
-        student_profile = self.get_object()
-
-        student_request = StudentRequest.objects.filter(
-            student_profile=student_profile,
-            project=project,
-        ).first()
-
-        if not student_request:
-            raise ValidationError("There is no request from student")
-
-        state = request.data["decision"]
-        project.team.add(student_profile)
-        student_request.state = state
-        student_request.save()
-
-        return Response({"status": "ok"})
-
 
 class CompanyViewSet(ModelViewSet):
     queryset = Company.objects.all()
@@ -118,3 +84,38 @@ class ReviewViewSet(ModelViewSet):
 class StudentRequestViewSet(ModelViewSet):
     queryset = StudentRequest.objects.all()
     serializer_class = StudentRequestSerializer
+
+    @action(methods=["POST"], detail=True, url_path="make_response")
+    def make_response(self, request, *args, **kwargs):
+        if not request.user or not request.user.company:
+            raise ValidationError("You should has company")
+
+        if "decision" not in request.data or request.data["decision"] not in [
+            StudentRequest.StudentRequestState.ACCEPTED,
+            StudentRequest.StudentRequestState.REJECTED,
+        ]:
+            raise ValidationError(f"Decision key should be in {StudentRequest.StudentRequestState.choices}")
+
+        student_request = self.get_object()
+        project = student_request.project
+        company = request.user.company
+
+        if project.company != company:
+            raise ValidationError("You should by an owner of a project")
+
+        student_profile = student_request.student
+
+        student_request = StudentRequest.objects.filter(
+            student_profile=student_profile,
+            project=project,
+        ).first()
+
+        if not student_request:
+            raise ValidationError("There is no request from student")
+
+        state = request.data["decision"]
+        project.team.add(student_profile)
+        student_request.state = state
+        student_request.save()
+
+        return Response({"status": "ok"})
