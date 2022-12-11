@@ -106,7 +106,7 @@ class StudentRequestViewSet(ModelViewSet):
         student_profile = student_request.student
 
         student_request = StudentRequest.objects.filter(
-            student_profile=student_profile,
+            student=student_profile,
             project=project,
         ).first()
 
