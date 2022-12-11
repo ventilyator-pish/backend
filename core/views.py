@@ -43,7 +43,7 @@ class ProjectViewSet(ModelViewSet):
         project: Project = self.get_object()
 
         StudentRequest.objects.get_or_create(
-            student_profile=student_profile,
+            student=student_profile,
             project=project,
             initiator=User.UserType.STUDENT
         )

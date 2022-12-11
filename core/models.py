@@ -155,17 +155,30 @@ class StudentRequest(LifecycleModel):
 
     @hook(AFTER_UPDATE, when="state", was=StudentRequestState.OPEN, is_now=StudentRequestState.ACCEPTED)
     def on_accepted(self):
-        send_email.delay(
-            self.student.user.email,
-            f"Поздравляю! Вас рассматривает компания {self.company.name} для проекта {self.project.name}. Подробнее."
-        )
+        if self.initiator == User.UserType.COMPANY:
+            send_email.delay(
+                self.student.user.email,
+                f"Поздравляю! Вас рассматривает компания {self.company.name} для проекта {self.project.name}. Подробнее."
+            )
+        else:
+            send_email.delay(
+                self.company.user.email,
+                f"Студент {self.student.user.first_name} готов присодиниться к проекту {self.project.nameg}"
+            )
 
     @hook(AFTER_UPDATE, when="state", was=StudentRequestState.OPEN, is_now=StudentRequestState.REJECTED)
     def on_rejected(self):
-        send_email.delay(
-            self.student.user.email,
-            f"К сожалению, компания {self.company.name} не рассматривает вашу кандидатуру для проекта {self.project.name}."
-        )
+        if self.initiator == User.UserType.COMPANY:
+            send_email.delay(
+                self.student.user.email,
+                f"К сожалению, компания {self.company.name} не рассматривает вашу кандидатуру для проекта {self.project.name}."
+            )
+        else:
+            send_email.delay(
+                self.company.user.email,
+                f"К сожалению, студент {self.student.user.first_name} пока не готов рассматривать место в проекте {self.project.name}."
+            )
+
 
     def __str__(self):
         return f"StudentRequest[{self.id}] {self.company.name} {self.student.isu}"
