@@ -118,7 +118,7 @@ class StudentRequestViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.queryset.exclude(state=StudentRequest.StudentRequestState.OPEN)
-        return Response(StudentRequestSerializer(queryset, many=True).data)
+        return Response(StudentRequestSerializer(queryset, many=True, context={"request": self.request}).data)
 
     @action(methods=["POST"], detail=True, url_path="update_tags")
     def update_tags(self, request, *args, **kwargs):
